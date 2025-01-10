@@ -6,7 +6,6 @@
 ~/.zshrc-personal
 ~/.bashrc
 ~/.zshrc
-~/.vimrc
 ~/.xinitrc
 ~/.xsession
 ~/.Xauthority
