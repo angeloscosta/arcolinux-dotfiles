@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Definindo variáveis
+a=$SECONDS
+# sleep 3  # Process to execute
+# declare -i keydown_time=$(date +%s)
+backlight="/sys/class/backlight/intel_backlight/"
+declare -i max_brightness=$(cat "$backlight"max_brightness)
+
+# Notify
+notify_user() {
+	notify-send -h string:x-canonical-private-synchronous:sys-backlight "$1"
+}
+
+alter_backlight() {
+	while true; do
+		# Calculando o tempo mantendo a tecla pressionada
+		pressed_time=$(( SECONDS - a ))
+		# pressed_time=$(( $(date +%s) - $keydown_time ))
+		# notify-send $pressed_time
+		# notify-send $keydown_time
+
+		# Ajustando a alteração com base no tempo
+		if (( pressed_time < 1 )); then
+			# light_hard -"$1" 1
+			light -"$1" 1
+		elif (( pressed_time >= 1 && pressed_time < 2 )); then
+			# light_hard -"$1" 2
+			light -"$1" 2
+		else
+			# light_hard -"$1" 5
+			light -"$1" 5
+		fi
+		notify_user "Brightness: $(printf "%.0f\n" $(light -G))%"
+		sleep 0.1
+	done
+}
+
+# Execute accordingly
+if [[ "$1" == "--get" ]]; then
+	light -G
+elif [[ "$1" == "--inc" ]]; then
+	alter_backlight "A"
+elif [[ "$1" == "--dec" ]]; then
+	alter_backlight "U"
+elif [[ "$1" == "--max" ]]; then
+	# light_hard -A 100
+	light -S 100
+elif [[ "$1" == "--min" ]]; then
+	# light_hard -U 100
+	light -S 1
+else
+	notify_user "No command. Exiting."
+	exit 0
+fi

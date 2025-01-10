@@ -1,0 +1,88 @@
+#!/bin/bash
+
+dir=/run/media/Videos/Wallpaper/YouTube
+playlist_dir=$dir/Playlist
+
+# Archived from previous version
+# file=$dir/my_playlists.m3u
+# readarray -t playli < <(cat $file | sed 's/[^[:print:]]//g' | xargs)
+# yt-dlp --flat-playlist --write-info-json ${playli[0]} -o $playlist_dir/"%(title)s.%(ext)s"
+
+# Get playlist url from each file in $playlist_dir 
+get_playlist_urls() {
+  # Inicializa o array de URLs
+  local playlist_urls=()
+  for playlist_file in "$(get_playlist_info_files)"; do
+    # playlist_urls+=$(cat "$playlist_file" | jq -r .webpage_url)
+    playlist_urls+=$(jq -r .webpage_url "$playlist_file")
+  done
+  echo "${playlist_urls[@]}"
+}
+
+# Find playlist files in $playlist_dir
+get_playlist_info_files() {
+  readarray -t info_files < <(find $playlist_dir -maxdepth 1 -type f -name "*.info.json")
+  # readarray -t info_files < <(find $playlist_dir -maxdepth 1 -type f -print0 | xargs -0 echo) 
+  echo "${info_files[@]}"
+}
+
+get_playlist_track_files() {
+  readarray -t track_files < <(find $dir -maxdepth 1 -type f -name "*.json")
+  # readarray -t track_files < <(find $dir -maxdepth 1 -type f -print0 | xargs -0 echo) 
+  echo "${track_files[@]}"
+}
+
+# Update playlist info.json
+update_playlists() {
+  for playlist_url in $(get_playlist_urls); do
+    yt-dlp --flat-playlist --write-info-json $playlist_url -o $playlist_dir/"%(title)s.%(ext)s"
+  done
+}
+
+# Get tracks urls from each playlist file 
+update_playlist_track_files(){
+  for info_file in "$(get_playlist_info_files)"; do
+    # Update/Download playlist tracks .json
+    yt-dlp --flat-playlist --dump-json $(jq -r .webpage_url "$info_file") > "$dir/`jq -r .title "$info_file"`.json"
+
+    # if export urls == true
+    # jq -r .url "$info" > "$dir/`jq -r .title "$track_file"`.m3u"
+    # echo "${urls[@]}" > "$dir/`jq -r .title "$track_file"`.m3u"
+    # jq -r .url "$dir/`jq -r .title "$info_file"`.json"
+  done
+}
+
+function help_message() {
+  echo "Uso: $(basename "$0") [-u] [-i] [-t] [-h]"
+  echo "   -u: Update playlists"
+  echo "   -i: Get playlists <info> .info.json files"
+  echo "   -t: Get playlists <track> .json files"
+  echo "   -h: Print this help message"
+}
+
+# Use getopts para processar as opções
+while getopts ":uith" opt; do
+  case ${opt} in
+    u )
+      update_playlists
+      update_playlist_track_files
+      ;;
+    i )
+      get_playlist_info_files
+      ;;
+    t )
+      get_playlist_track_files
+      ;;
+    h )
+      help_message
+      ;;
+    \? )
+      echo "Invalid option: -$OPTARG. Use -h for help."
+      help_message
+      ;;
+    : )
+      echo "Option -$OPTARG requires an argument. Use -h for help."
+      help_message
+      ;;
+  esac
+done

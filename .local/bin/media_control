@@ -1,0 +1,129 @@
+#!/bin/bash
+
+# Verifica se o segundo argumento ($2) foi fornecido
+if [ -z "$2" ]; then
+    # Configurações padrão se nenhum segundo argumento for fornecido
+    SINK="@DEFAULT_SINK@"
+    SOURCE="@DEFAULT_SOURCE@"
+else
+    # Usa as configurações fornecidas
+    SINK="$2"
+    SOURCE="$2"
+fi
+
+# Definindo variáveis
+declare -i keydown_time=$(date +%s)
+
+# Função para notificar o usuário
+notify_user() {
+	notify-send -h string:x-canonical-private-synchronous:sys-media "$1"
+}
+
+# Função para obter o volume
+get_volume() {
+	# volume=$(pactl get-sink-volume @DEFAULT_SINK@ | awk -F '/' '{print $2}' | tr -d ' ')
+	# Volume medio entre direita e esquerda
+	volume=$(pactl get-sink-volume @DEFAULT_SINK@ | awk -F '/' '{sum += $2 + $4} END {printf "%.0f", sum / 2}')
+	echo "$volume"
+}
+
+# Função para alterar o volume
+alter_volume() {
+	while true; do
+		# Calculando o tempo mantendo a tecla pressionada
+		pressed_time=$(( $(date +%s) - keydown_time ))
+		# notify-send "$pressed_time"
+		# notify-send "$keydown_time"
+
+		# Ajustando a alteração com base no tempo
+		if (( pressed_time < 1 )); then
+			pactl set-sink-volume @DEFAULT_SINK@ "$1"1% 
+		elif (( pressed_time >= 1 && pressed_time < 2 )); then
+			pactl set-sink-volume @DEFAULT_SINK@ "$1"2% 
+		else
+			pactl set-sink-volume @DEFAULT_SINK@ "$1"5% 
+		fi
+		notify_user "Volume: $(get_volume)%"
+		sleep 0.1
+	done
+}
+
+# Função para alternar o mudo
+toggle_mute() {
+	if [ "$(pactl get-sink-mute $SINK)" == "Mute: no" ]; then
+    	pactl set-sink-mute $SINK true && notify_user "Volume desligado"
+	elif [ "$(pactl get-sink-mute $SINK)" == "Mute: yes" ]; then
+    	pactl set-sink-mute $SINK false && notify_user "Volume ligado"
+	fi
+}
+
+# Função para alternar o microfone
+toggle_mic() {
+	if [ "$(pactl get-source-mute $SOURCE)" == "Mute: no" ]; then
+    	pactl set-source-mute $SOURCE true && notify_user "Microfone desligado"
+	elif [ "$(pactl get-source-mute $SOURCE)" == "Mute: yes" ]; then
+    	pactl set-source-mute $SOURCE false && notify_user "Microfone ligado"
+	fi
+}
+
+toggle_play () {
+	playerctl play-pause && sleep 1.2 && kunst --silent
+	# playerctl play-pause && sleep 1.2
+}
+
+next () {
+	playerctl next && sleep 1.2 && kunst --silent
+	# playerctl next && sleep 1.2
+}
+
+prev () {
+	playerctl previous && sleep 1.2 && kunst --silent
+	# playerctl previous && sleep 1.2
+}
+
+cycle_sink () {
+	# readarray -t sinks < <(pactl list short sinks | cut -c 1)
+	readarray -t sinks < <(pactl list short sinks | awk -F ' ' '{print $2}')
+	current=$(pactl get-default-sink)
+
+	if [[ "$current" = "${sinks[-1]}" ]]; then
+		current="${sinks[0]}"
+		pactl set-default-sink "${sinks[0]}"
+	else
+		for _opt in "${sinks[@]}"; do
+			if [[ "$_opt" = "$current" ]]; then
+				continue
+	    else
+	  		echo "$_opt"
+				pactl set-default-sink "$_opt"
+				break
+	    fi
+		done
+	fi
+}
+
+# Executar conforme necessário
+if [[ "$1" == "--get" ]]; then
+	get_volume
+elif [[ "$1" == "--inc" ]]; then
+	alter_volume "+"
+elif [[ "$1" == "--dec" ]]; then
+	alter_volume "-"
+elif [[ "$1" == "--next" ]]; then
+	next
+elif [[ "$1" == "--prev" ]]; then
+	prev
+elif [[ "$1" == "--cycle-sink" ]]; then
+	cycle_sink
+elif [[ "$1" == "--toggle-play" ]]; then
+	toggle_play
+elif [[ "$1" == "--toggle-mute" ]]; then
+	toggle_mute
+elif [[ "$1" == "--toggle-mic" ]]; then
+	toggle_mic
+elif [[ "$1" == "--get-icon" ]]; then
+	get_icon
+else
+	notify_user "No command. Exiting."
+	exit 0
+fi

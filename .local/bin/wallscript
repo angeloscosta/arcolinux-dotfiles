@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ $(pidof mpvpaper) ]]; then
+	pkill -9 mpvpaper
+fi
+
+config=$HOME/.config/mpv/wallscript.conf
+
+# GPU
+# prime_run="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"
+prime_run="__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only"
+
+opt="input-ipc-server=/tmp/mpv-socket no-audio loop shuffle panscan=1 profile=sw-fast"
+# opt="input-ipc-server=/tmp/mpv-socket include=$config no-audio loop shuffle panscan=1"
+if [ -z "$1" ]; then
+	playlist=$(sed -n 1p $HOME/last_wallpaper.m3u)
+else
+	playlist=$1
+	echo $1 > $HOME/last_wallpaper.m3u
+fi
+
+# env $prime_run mpvpaper -f -o "$opt" '*' $playlist
+mpvpaper -f -o "$opt" '*' $playlist

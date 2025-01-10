@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+# Definindo variáveis
+declare -i keydown_time=$(date +%s)
+backlight="/sys/class/backlight/intel_backlight/"
+declare -i max_brightness=$(cat "$backlight"max_brightness)
+
+# Get brightness
+get_backlight() {
+	# LIGHT=$(printf "%.0f\n" $(xbacklight -get))
+	backlight=$(printf "%.0f\n" `light -G`)
+	echo "$backlight"
+}
+
+# Notify
+notify_user() {
+	notify-send -h string:x-canonical-private-synchronous:sys-notify "$1"
+}
+
+alter_backlight() {
+	while true; do
+		# Calculando o tempo mantendo a tecla pressionada
+		pressed_time=$(( $(date +%s) - keydown_time ))
+
+		# Ajustando a alteração com base no tempo
+		if (( pressed_time < 1 )); then
+			light -"$1" 1
+		elif (( pressed_time >= 1 && pressed_time < 2 )); then
+			light -"$1" 2
+		else
+			light -"$1" 5
+		fi
+		notify_user "Brightness: $(get_backlight)%"
+		# sleep 0.1
+	done
+}
+
+light_hard() {
+	current_brightness=`cat "$backlight"brightness`
+	factor=$(( max_brightness / 100 ))
+
+	if [[ "$1" == "-G" ]]; then
+		# get_backlight
+		echo $(( $current_brightness / $factor ))
+	elif [[ "$1" == "-A" ]]; then
+		qtd=$(( $2 * $factor ))
+		next_brightness=$(( current_brightness + $qtd))
+		if (( next_brightness > 7500 )); then
+			notify-send "upper limit"
+			next_brightness=7500
+		fi
+		echo $next_brightness
+		echo $next_brightness >> /sys/class/backlight/intel_backlight/brightness
+	elif [[ "$1" == "-U" ]]; then
+		qtd=$(( $2 * $factor ))
+		next_brightness=$(( current_brightness - $qtd))
+		if (( next_brightness < 1 )); then
+			notify-send "bottom limit"
+			next_brightness=1
+		fi
+		echo $next_brightness
+		echo $next_brightness >> /sys/class/backlight/intel_backlight/brightness
+	else
+		notify_user "No command. Exiting."
+		exit 0
+	fi
+}
+
+alter_backlight_hard() {
+	while true; do
+		# Calculando o tempo mantendo a tecla pressionada
+		pressed_time=$(( $(date +%s) - keydown_time ))
+
+		# Ajustando a alteração com base no tempo
+		if (( pressed_time < 1 )); then
+			light_hard -"$1" 1
+		elif (( pressed_time >= 1 && pressed_time < 2 )); then
+			light_hard -"$1" 2
+		else
+			light_hard -"$1" 5
+		fi
+		notify_user "Brightness: $(light_hard -G)%"
+		# sleep 0.1
+	done
+}
+
+# Execute accordingly
+if [[ "$1" == "--get" ]]; then
+	# get_backlight
+	light_hard -G
+elif [[ "$1" == "--inc" ]]; then
+	# alter_backlight "A"
+	alter_backlight_hard "A"
+elif [[ "$1" == "--dec" ]]; then
+	# alter_backlight "U"
+	alter_backlight_hard "U"
+else
+	notify_user "No command. Exiting."
+	exit 0
+fi

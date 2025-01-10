@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+source=${1/"angelo_/"/"angelo_:/"}
+# source=${1/angelo_shared_with_me/angelo_,shared_with_me:}
+path=${1/.ghost/""}
+
+source=${source/"/home/angelo/GoogleDrive/"/""}
+source=${source/.ghost/""}
+
+echo "source: $source" > rclone_copy_ghost.log
+echo "path: $path" >> rclone_copy_ghost.log
+echo "rclone copyto $source $path" >> rclone_copy_ghost.log
+
+# rm "$1"
+rclone copyto $source $path

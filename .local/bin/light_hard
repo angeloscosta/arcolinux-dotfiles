@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+backlight="/sys/class/backlight/intel_backlight"
+declare -i max_brightness=$(cat $backlight/max_brightness)
+
+current_brightness=`cat $backlight/brightness`
+factor=$(( max_brightness / 100 ))
+
+if [[ "$1" == "-G" ]]; then
+	# get_backlight
+	echo $(( $current_brightness / $factor ))
+elif [[ "$1" == "-A" ]]; then
+	qtd=$(( $2 * $factor ))
+	next_brightness=$(( current_brightness + $qtd))
+	if (( next_brightness > 7500 )); then
+		notify-send -h string:x-canonical-private-synchronous:sys-not2 "upper limit"
+		next_brightness=7500
+	fi
+	echo $next_brightness >> /sys/class/backlight/intel_backlight/brightness
+elif [[ "$1" == "-U" ]]; then
+	qtd=$(( $2 * $factor ))
+	next_brightness=$(( current_brightness - $qtd))
+	if (( next_brightness < 1 )); then
+		notify-send -h string:x-canonical-private-synchronous:sys-not2 "bottom limit"
+		next_brightness=1
+	fi
+	echo $next_brightness >> /sys/class/backlight/intel_backlight/brightness
+else
+	notify_user "No command. Exiting."
+	exit 0
+fi

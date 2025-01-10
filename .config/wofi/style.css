@@ -1,0 +1,66 @@
+/*
+@define-color _accent --wofi-color0;
+*/
+
+@import ".config/colors.css";
+
+* {
+  font-family: Fira Mono;
+  /* font-family: Droid Sans Mono; */
+  font-size: 20px;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  overflow: hidden;
+}
+
+window {
+  /* border: 10px solid @_accent; */
+  border: 0px solid @_accent;
+  border-radius: 0px;
+  background-color: transparent;
+  background: transparent;
+}
+
+#input {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 0px;
+  border: 0px solid @_accent;
+  color: @theme_fg_color;
+  /* background-color: alpha(@theme_bg_color, 0.6); */
+  background-color: @theme_bg_color;
+}
+
+#inner-box {
+  background: transparent;
+}
+
+#outer-box {
+  margin: 5px;
+  border: 0px;
+  padding: 5px;
+  /* background-color: alpha(@theme_bg_color, 0.6); */
+  background-color: @theme_bg_color;
+}
+
+#text {
+  padding: 0px;
+  color: @theme_fg_color;
+}
+
+#text:selected {
+  color: @_accent;
+}
+
+#entry {
+  padding: 10px;
+  border-radius: 0px;
+}
+
+/* #entry:nth-child(even) {} */
+
+#entry:selected {
+  background-color: transparent;
+  /* color: alpha(@theme_bg_color, 0.6); */
+  color: @theme_bg_color;
+}

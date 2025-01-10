@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Lê as três primeiras linhas do arquivo .config/theme.conf
+mapfile -t vars < <(awk -F '=' 'NR<=4 {print $2}' .config/theme.conf)
+
+# Atribui os elementos do array para variáveis individuais
+theme_bg_color="${vars[0]}"
+theme_fg_color="${vars[1]}"
+accent="${vars[2]}"
+opacity="${vars[3]}"
+
+# background="rgba(`.local/bin/hex_to_rgb $background`, $opacity)"
+# foreground="rgba(`.local/bin/hex_to_rgb $foreground`, 1)"
+# accent="rgba(`.local/bin/hex_to_rgb $accent`, 1)"
+
+target="$HOME/.config/colors.css"
+
+# Change colors.css
+sed -i -e "1s/.*/@define-color theme_bg_color $theme_bg_color;/" -e "2s/.*/@define-color theme_fg_color $theme_fg_color;/" -e "3s/.*/@define-color _accent $accent;/" $HOME/.config/colors.css || echo -e "@define-color _background $background;\n@define-color _foreground $foreground;\n@define-color _accent $accent;" > $target
+# sed -i -e "1s/.*/@define-color _background $background;/" -e "2s/.*/@define-color _foreground $foreground;/" -e "3s/.*/@define-color _accent $accent;/" "4s/.*/@define-color _opacity $opacity;/" $HOME/.config/colors.css || echo -e "@define-color _background $background;\n@define-color _foreground $foreground;\n@define-color _accent $accent;" > $target
+
+exit 0

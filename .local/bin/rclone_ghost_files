@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+populate_ghosts () {
+  echo "remote: $1"
+  echo "path: $2"
+  mkdir -p "$2"
+  rclone lsf --fast-list -R $1 | while IFS= read -r l; do
+    if [ "${l: -1}" == / ]; then
+      mkdir -p "$2$l"
+    else
+      if [ ! -f "$2$l" ]; then
+        touch "$2$l.ghost"
+      fi
+    fi
+  done
+}
+
+path="$HOME/GoogleDrive/${1/,/_}/"
+path="${path/:/}"
+populate_ghosts "$1" "$path"

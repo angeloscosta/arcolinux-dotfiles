@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Define o nome do script (ajuste o nome conforme necessário)
+
+LOCK_FILE=/tmp/mpvpaperdaemon
+TIMER_LOCK=/tmp/mpvpapertimer
+MPV_SOCKET_PATH="/tmp/mpv-socket"
+
+PRG_NAME="mpvpaperdaemon"
+
+if [ -s /tmp/mpvpaperdaemon ]; then
+  PRG_PID=$(cat /tmp/mpvpaperdaemon)
+	# PREV_PID=$(cat $LOCK_FILE)
+	if [ -n "$PRG_PID" ]; then
+		echo "Previous instance $PREV_PID"
+		# Terminar a instancia anterior
+		kill -9 $PREV_PID
+		# Abortar a inicializacao de uma nova instancia
+		# exit
+	fi
+fi
+
+PRG_PID=$$
+
+# echo "$0"
+echo "Current instance: $PRG_PID"
+echo "$PRG_PID" > $LOCK_FILE
+
+TIMER=${TIMER:-6}
+
+battery() {
+	while pidof mpvpaper >/dev/null; do
+			sleep "$TIMER"s 
+			echo 'playlist-next' | socat - /tmp/mpv-socket
+			notify-send 'Next track (mpvpaperdaemon)' &
+			sleep 1
+			echo 'set pause no' | socat - /tmp/mpv-socket
+	done	
+
+	exit
+}
+
+timer() {
+	while pidof mpvpaper >/dev/null; do
+		bat_state=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep state | awk '{print $2}')
+	
+		if [ "$bat_state" = "fully-charged" ] || [ "$bat_state" = "charging" ]; then
+			echo 'set pause no' | socat - $MPV_SOCKET_PATH
+		elif [ "$bat_state" = "discharging" ]; then
+			echo 'set pause yes' | socat - $MPV_SOCKET_PATH
+		fi
+	
+		sleep 5
+	done	
+
+	exit
+}
+
+# Lidar com interrupção (Ctrl+C)
+trap "echo 'Encerrando $PRG_NAME, pid: $PRG_PID'; rm $LOCK_FILE; exit" SIGINT SIGTERM
+
+battery &
+timer &
+
+# Capturando o PID de 'timer'
+TIMER_PID=$!
+echo "$TIMER_PID" > $TIMER_LOCK
+
+wait -n

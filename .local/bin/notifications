@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+CONFIG="$HOME/.config/mako/config"
+BG=$(sed -n 1p $HOME/.config/theme.conf | awk -F '= ' '{print $2}')
+FG=$(sed -n 2p $HOME/.config/theme.conf | awk -F '= ' '{print $2}')
+BC=$(sed -n 3p $HOME/.config/theme.conf | awk -F '= ' '{print $2}')
+
+if [[ $(pidof mako) ]]; then
+	killall mako
+fi
+
+mako --config ${CONFIG} --background-color=$BG --text-color=$FG --border-color=$BC

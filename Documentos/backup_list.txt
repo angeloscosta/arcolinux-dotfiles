@@ -1,0 +1,12 @@
+~/.zshrc
+~/.zshrc-personal
+~/.bashrc
+~/.zshrc
+~/.vimrc
+~/.local/bin
+~/.config/hypr
+~/.config/waybar
+~/.config/sway
+~/.config/wofi
+~/.config/gammastep
+~/Documentos/backup_list.txt

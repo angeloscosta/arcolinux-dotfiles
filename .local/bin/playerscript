@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Define o nome do script (ajuste o nome conforme necessário)
+PRG_NAME="playerscript"
+PRG_PID=$$
+
+# TIMER=${TIMER:-6}
+
+# Lidar com interrupção (Ctrl+C)
+trap "echo 'Encerrando script...'; exit" SIGINT SIGTERM
+
+# tool=mpvpaper
+# command=`$tool -f -n 360 -p -o "input-ipc-server=/tmp/mpv-socket no-audio loop shuffle panscan=1 profile=sw-fast" "*"`
+
+if [[ $(pidof mpvpaper) ]]; then
+	pkill -9 mpvpaper
+fi 
+
+# Imprimir conteudo da pasta num arquivo de playlist e usa-lo.
+# Dessa forma quando trocar de imagem, resetar o tempo.
+
+# opt="input-ipc-server=/tmp/mpv-socket loop shuffle panscan=1 profile=sw-fast opengl-glfinish=yes opengl-swapinterval=0 vo=xv"
+mpvpaper -f -o "input-ipc-server=/tmp/mpv-socket loop shuffle panscan=1 profile=sw-fast opengl-glfinish=yes opengl-swapinterval=0 vo=xv" '*' $1
+
+while true;
+do
+	# sleep "$TIMER"m 
+	echo 'playlist-next' | socat - /tmp/mpv-socket
+	notify-send 'Next track' &
+	sleep 1 &
+	echo 'set pause no' | socat - /tmp/mpv-socket
+done

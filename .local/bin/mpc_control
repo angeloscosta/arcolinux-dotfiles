@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Definindo variáveis
+declare -i keydown_time=$(date +%s)
+
+# Função para notificar o usuário
+notify_user() {
+	notify-send -h string:x-canonical-private-synchronous:sys-mpc "$1"
+}
+
+# Função para obter o volume
+get_volume() {
+	volume=$(mpc status | tail -n1 | awk -F ' ' '{print $2}' | tr -d '%')
+	echo "$volume"
+}
+
+get_status() {
+	status=$(mpc | sed -n 2p | awk '{for (i=1; i<NF; i++) if(i==2); else printf $i " "; print $NF}' | tr -d '()[]') 
+	echo "$status"
+}
+
+# Função para alterar o volume
+alter_volume() {
+	while true; do
+		# Calculando o tempo mantendo a tecla pressionada
+		pressed_time=$(( $(date +%s) - keydown_time ))
+
+		# Ajustando a alteração com base no tempo
+		if (( pressed_time < 1 )); then
+			mpc volume "$1"1 
+		elif (( pressed_time >= 1 && pressed_time < 2 )); then
+			mpc volume "$1"2 
+		else
+			mpc volume "$1"5 
+		fi
+		notify_user "[mpc] Volume $(get_volume)%"
+		sleep 0.1
+	done
+}
+
+# Função para alternar o satus
+toggle_play () {
+	mpc toggle && kunst --size 64x64 --silent
+}
+
+toggle_stop () {
+	mpc -q stop && kunst --size 64x64 --silent
+}
+
+next () {
+	mpc next && kunst --size 64x64 --silent
+}
+
+prev () {
+	mpc prev && kunst --size 64x64 --silent
+}
+# Executar conforme necessário
+if [[ "$1" == "--get" ]]; then
+	get_volume
+elif [[ "$1" == "--inc" ]]; then
+	alter_volume "+"
+elif [[ "$1" == "--dec" ]]; then
+	alter_volume "-"
+elif [[ "$1" == "--toggle" ]]; then
+	toggle_play
+elif [[ "$1" == "--stop" ]]; then
+	toggle_stop
+elif [[ "$1" == "--next" ]]; then
+	next
+elif [[ "$1" == "--prev" ]]; then
+	prev
+elif [[ "$1" == "--get-icon" ]]; then
+	get_icon
+else
+	notify_user "No command. Exiting."
+	exit 0
+fi

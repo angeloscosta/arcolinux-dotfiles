@@ -1,0 +1,17 @@
+{
+  "include": "~/.config/waybar/modules",
+  "layer": "top",
+  //"mode": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "position": "top",
+  "spacing": 0,
+  "fixed-center": true,
+  "ipc": true,
+  "margin-left": 0,
+  "margin-right": 0,
+
+  "modules-left": ["image#menu", "sway/workspaces", "mpris", "sway/submap", "gamemode", "group/hardware"],
+  "modules-center": ["custom/weather"],
+  "modules-right": ["pulseaudio", "backlight", "network", "battery", "tray", "clock"],
+}
