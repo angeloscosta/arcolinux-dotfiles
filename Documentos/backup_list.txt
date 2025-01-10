@@ -1,12 +1,34 @@
+
+# @ ~
 ~/.zshrc
 ~/.zshrc-personal
 ~/.bashrc
 ~/.zshrc
 ~/.vimrc
+
+# @ ~/.local
 ~/.local/bin
+
+# WMs @ ~/.config
 ~/.config/hypr
-~/.config/waybar
 ~/.config/sway
+~/.config/cosmic
+~/.config/xfce4
+
+# Pkgs @ ~/.config
+~/.config/waybar
 ~/.config/wofi
 ~/.config/gammastep
-~/Documentos/backup_list.txt
+~/.config/mpv
+~/.config/MangoHud
+~/.config/glimpse
+~/.config/yay
+~/.config/yadm
+~/.config/helix
+~/.config/felix
+~/.config/Thunar
+~/.config/nautilus
+~/.config/wireplumber
+
+# Costumização
+~/.config/themes
