@@ -5,6 +5,12 @@
 ~/.bashrc
 ~/.zshrc
 ~/.vimrc
+~/.xinitrc
+~/.xsession
+~/.Xauthority
+~/.Xresources
+~/.gtkrc-2.0
+~/.gitconfig
 
 # @ ~/.local
 ~/.local/bin
