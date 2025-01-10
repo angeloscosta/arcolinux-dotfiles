@@ -23,7 +23,7 @@
 ~/.config/xfce4
 
 # Pkgs @ ~/.config
-~/.config/.conky
+~/.config/conky
 ~/.config/waybar
 ~/.config/wofi
 ~/.config/gammastep
