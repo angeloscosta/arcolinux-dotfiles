@@ -1,0 +1,68 @@
+* {
+    font-family: 'Fira Mono';
+    font-size: 30px;
+    animation: none;
+    background-color: #0f1419;
+    color: #fafafa;
+}
+
+.search-field {
+    padding: 15px;
+    background-color: alpha(#0f1419, 06);
+    border: none;
+    color: #fafafa;
+}
+
+.outer-container {
+    border: 10px solid #0f1419;
+    background-color: transparent;
+}
+
+.results-list {
+    border-radius: 0px;
+    background-color: transparent;
+}
+
+.result-box {
+    border-radius: 0px;
+    background-color: transparent;
+    padding: 2px;
+    transition: none;
+    color: #fafafa;
+    border-color: #ff6f6b;
+}
+
+.result-title {
+    color: #fafafa;
+}
+
+.result-subtext {
+    color: #ff6f6b;
+}
+
+.odd-row {
+    background-color: transparent;
+}
+
+.result-title:selected {
+    color: #ff6f6b;
+}
+
+.result-box:selected {
+    color: #ff6f6b;
+}
+
+.results-list:selected {
+    color: #ff6f6b;
+}
+
+scrollbar {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+}
+
+scrollbar slider {
+    border-radius: 0px;
+    background-color: #fff;
+    border: none;
+}

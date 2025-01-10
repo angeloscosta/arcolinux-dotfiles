@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Caminho para o arquivo com os diretórios e arquivos
-BACKUP_LIST="$HOME/Documentos/backup_list.txt"
+# BACKUP_LIST="$HOME/Documentos/backup_list.txt"
+BACKUP_LIST="$HOME/.config/yadm/backup_list.txt"
 
 # Verifica se o arquivo existe
 if [[ ! -f "$BACKUP_LIST" ]]; then
