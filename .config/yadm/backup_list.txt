@@ -1,5 +1,7 @@
 
-# @ ~
+# Directórios @ ~
+
+# Arquivos @ ~
 ~/.zshrc
 ~/.zshrc-personal
 ~/.bashrc
@@ -22,6 +24,7 @@
 ~/.config/xfce4
 
 # Pkgs @ ~/.config
+~/.config/.conky
 ~/.config/waybar
 ~/.config/wofi
 ~/.config/gammastep

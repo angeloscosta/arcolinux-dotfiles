@@ -1,0 +1,18 @@
+0 verbose cli /usr/bin/node /usr/bin/npm
+1 info using npm@11.0.0
+2 info using node@v23.4.0
+3 silly config load:file:/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/angelo/Downloads/GitHub/mpvpaperWallpaperUI/.npmrc
+5 silly config load:file:/home/angelo/.npmrc
+6 silly config load:file:/etc/npmrc
+7 verbose title npm start
+8 verbose argv "start"
+9 verbose logfile logs-max:10 dir:/home/angelo/.npm/_logs/2025-01-03T15_40_14_764Z-
+10 verbose logfile /home/angelo/.npm/_logs/2025-01-03T15_40_14_764Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /home/angelo/Downloads/GitHub/mpvpaperWallpaperUI
+13 verbose os Linux 6.12.6-zen1-1-zen
+14 verbose node v23.4.0
+15 verbose npm  v11.0.0
+16 verbose exit 0
+17 info ok

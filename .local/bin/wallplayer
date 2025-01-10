@@ -4,7 +4,7 @@ if [[ $(pidof mpvpaper) ]]; then
 	pkill -9 mpvpaper
 fi
  
-wall=$HOME/last_wallplayer_playlist.m3u
+wall=$HOME/.last_wallplayer_playlist.m3u
 # profile=low-latency
 # opt="input-ipc-server=/tmp/mpv-socket loop shuffle panscan=1 profile=low-latency opengl-glfinish=yes opengl-swapinterval=0 vo=xv"
 # profile=sw-fast
@@ -26,9 +26,9 @@ else
 			echo "À fazer"
 		else
 			# query=$(jq -r .url "$1")
-			# echo $query > $HOME/last_wallplayer_playlist.m3u
+			# echo $query > $HOME/.last_wallplayer_playlist.m3u
 			# query=$(jq -r .url "$1" | tr ' ' '\n')
-			# echo "$query" > "$HOME/last_wallplayer_playlist.m3u"
+			# echo "$query" > "$HOME/.last_wallplayer_playlist.m3u"
 
 			readarray -t query < <(jq -r .url "$1")
 
@@ -41,12 +41,12 @@ else
     		echo "{ \"command\": [\"loadfile\", \"${query[i]}\", \"append-play\"] }" | socat - /tmp/mpv-socket
 			done
 
-			echo "${query[@]}" > $HOME/last_wallplayer_playlist.m3u
+			echo "${query[@]}" > $HOME/.last_wallplayer_playlist.m3u
 		fi
 	else
 		env $prime_run mpvpaper -v -p -o "$opt shuffle" '*' $1
 		# mpvpaper -f -p -o "$opt shuffle" '*' $1
-		# cp $1 $HOME/last_wallplayer_playlist.m3u
-		echo $query > $HOME/last_wallplayer_playlist.m3u
+		# cp $1 $HOME/.last_wallplayer_playlist.m3u
+		echo $query > $HOME/.last_wallplayer_playlist.m3u
 	fi
 fi

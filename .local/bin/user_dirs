@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Definir as variáveis de ambiente
+declare -A dirs
+dirs=(
+  ["Imagens"]="$XDG_PICTURES_DIR"
+  ["Documentos"]="$XDG_DOCUMENTS_DIR"
+  ["Música"]="$XDG_MUSIC_DIR"
+  ["Vídeos"]="$XDG_VIDEOS_DIR"
+  ["Downloads"]="$XDG_DOWNLOAD_DIR"
+  ["Área de Trabalho"]="$XDG_DESKTOP_DIR"
+  ["Modelos"]="$XDG_TEMPLATES_DIR"
+  ["Público"]="$XDG_PUBLICSHARE_DIR"
+)
+
+# Criar arquivo e salvar diretórios
+output_file="diretorios_usuario.txt"
+> "$output_file"
+
+for dir in "${!dirs[@]}"; do
+  echo "$dir: ${dirs[$dir]}" >> "$output_file"
+done
+
+echo "Diretórios salvos em $output_file"
+
