@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Diretório para salvar os arquivos
+output_dir="./.repos_packages"
+mkdir -p "$output_dir"
+
+# Limpa o diretório se já existirem arquivos
+rm -f "$output_dir"/*
+
+# Obtém a lista de pacotes instalados
+repos_pkgs=$(pacman -Q)
+qtd_repos_pkgs=$(echo "$repos_pkgs" | wc -l)
+
+# Obtém a lista de pacotes instalados do AUR (usando yay)
+aur_pkgs=$(yay -Qm)
+qtd_aur_pkgs=$(echo "$aur_pkgs" | wc -l)
+
+# Soma os pacotes do pacman (repos)
+qtd_total_packages=$((qtd_repos_pkgs + qtd_aur_pkgs))
+
+# Obtenha a lista de repositórios no pacman
+repos=$(grep -E '^\[.*\]$' /etc/pacman.conf | sed 's/\[//g' | sed 's/\]//g' | grep -v "options")
+
+# Contar o número de repositórios
+qtd_repos=$(echo $repos | wc -w)
+
+echo "Directório: $output_dir"
+echo "Pacotes: $qtd_total_packages"
+
+# Iterar sobre cada repositório e salvar a lista de pacotes em um arquivo
+for repo in $repos; do
+    current_count=$((current_count + 1))
+
+    repo_pkgs=$(paclist $repo)
+    qtd_repo_pkgs=$(echo "$repo_pkgs" | wc -l)
+
+    # Exibe o progresso
+    printf "\r%-80s\n" "$current_count/$qtd_repos - $repo - Pacotes: $qtd_repo_pkgs"
+
+    # paclist $repo > "$output_dir/$repo.txt"
+    echo "$repo_pkgs" > "$output_dir/$repo.txt"
+done
+
+# Incluir pacotes do AUR em um arquivo separado
+printf "\r%-80s\n" "AUR - Pacotes: $qtd_aur_pkgs"
+echo "$aur_pkgs" | awk '{print $1}' > "$output_dir/aur.txt"
+
+# Limpa a linha de progresso
+echo -ne "\n"
+
+echo "Pacotes separados por repositório em $output_dir."
