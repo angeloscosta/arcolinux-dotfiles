@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Caminho completo do script
+# SCRIPT_PATH=$(readlink -f "$0")
+
+# Encerrar instâncias anteriores, excluindo o próprio script em execução
+# pkill -f "$SCRIPT_PATH" --exclude $$
+
+# Caminho para o arquivo de trava
+LOCKFILE="/tmp/wallpaper.lock"
+
+# Verificar se outra instância está em execução
+if [[ -e "$LOCKFILE" ]]; then
+    echo "Outra instância já está em execução. Saindo."
+    exit 1
+fi
+
+# Criar o arquivo de trava
+touch "$LOCKFILE"
+
+# Função para remover a trava quando o script termina
+cleanup() {
+    rm -f "$LOCKFILE"
+    echo "Trava removida. Saindo."
+}
+
+trap cleanup EXIT
+
+# kill anterior
+if [[ $(pidof swaybg) ]]; then
+    pkill swaybg
+fi
+
+# Intervalo entre cada imagem
+INTERVAL=360
+
+# Diretório contendo as imagens
+# DIR="$HOME/Pictures/Wallpaper/Night"
+DIR=`sed -n 6p $HOME/.config/custom.conf | awk -F ': ' '{print $2}'`
+
+# Array para armazenar os nomes dos arquivos
+IMAGES=()
+
+# Preencher o array com os nomes dos arquivos no diretório
+read_dir() {
+    for I in "$DIR"/*; do
+        # if [ -f "$I" ]; then
+        if [[ "$I" =~ \.(jpg|jpeg|png|gif|bmp)$ ]]; then
+            IMAGES+=($(basename "$I"))
+        fi
+    done
+}
+
+# Embaralhar a ordem das imagens
+shuffle_img() {
+    IMAGES=($(shuf -e "${IMAGES[@]}"))
+}
+
+# Exibir os nomes dos arquivos no array
+print_dir() {
+    for J in "${IMAGES[@]}"; do
+        echo "$J"
+    done
+}
+
+# Carregar wallpaper
+load_img() {
+    swaybg -i "$DIR/$1" -m fill &
+}
+
+read_dir
+shuffle_img
+# print_dir
+
+while true;
+do
+    for K in "${IMAGES[@]}"; do
+        if [[ ! $DIR == `sed -n 6p $HOME/.config/custom.conf | awk -F ': ' '{print $2}'` ]]; then
+            DIR=`sed -n 6p $HOME/.config/custom.conf | awk -F ': ' '{print $2}'`
+            read_dir
+            shuffle_img
+        fi
+        load_img "$K"
+        _pid=$!
+        sleep $INTERVAL
+        kill $_pid
+    done
+done
+
+# Teste
+# echo "IMAGES:"${#IMAGES[@]}
+# echo ${IMAGES[*]}

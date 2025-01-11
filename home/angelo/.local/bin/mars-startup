@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# helper function to detect if a program is already running
+is_running () {
+    pgrep --uid "$UID" "$1" > /dev/null
+}
+
+# load default layout (use arandr to set it)
+[ -f ~/.screenlayout/default.sh ] && /bin/sh ~/.screenlayout/default.sh;
+
+# programs to automatically start
+is_running marsbar || marsbar &
+is_running wallpaper-daemon || wallpaper-daemon &
+is_running nm-applet || nm-applet &
+is_running blueman-applet || blueman-applet &
+is_running arandr || arandr &

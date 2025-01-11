@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [[ $(pidof mpvpaper) ]]; then
+	pkill -9 mpvpaper
+fi
+ 
+wall=$HOME/.last_wallplayer_playlist.m3u
+# profile=low-latency
+# opt="input-ipc-server=/tmp/mpv-socket loop shuffle panscan=1 profile=low-latency opengl-glfinish=yes opengl-swapinterval=0 vo=xv"
+# profile=sw-fast
+# opt="input-ipc-server=/tmp/mpv-socket panscan=1 profile=sw-fast opengl-glfinish=yes opengl-swapinterval=0 vo=xv"
+
+config=$HOME/.config/mpv/wallscript.conf
+
+# GPU
+# prime_run="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"
+prime_run="__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only"
+
+opt="input-ipc-server=/tmp/mpv-socket include=$config panscan=1"
+
+if [ -z "$1" ]; then
+	$prime_run mpvpaper -v -p -o "$opt" '*' $wall
+else
+	if [[ $1 == *.json ]]; then
+		if [[ $1 == *.info.json ]]; then
+			echo "À fazer"
+		else
+			# query=$(jq -r .url "$1")
+			# echo $query > $HOME/.last_wallplayer_playlist.m3u
+			# query=$(jq -r .url "$1" | tr ' ' '\n')
+			# echo "$query" > "$HOME/.last_wallplayer_playlist.m3u"
+
+			readarray -t query < <(jq -r .url "$1")
+
+			# Usa o primeira item
+		  env $prime_run mpvpaper -v -o "$opt" '*' "${query[0]}"
+		  # mpvpaper -f -o "$opt" '*' "${query[0]}"
+
+			# Adiciona os próximos items à playlist
+			for ((i = 1; i < ${#query[@]}; i++)); do
+    		echo "{ \"command\": [\"loadfile\", \"${query[i]}\", \"append-play\"] }" | socat - /tmp/mpv-socket
+			done
+
+			echo "${query[@]}" > $HOME/.last_wallplayer_playlist.m3u
+		fi
+	else
+		env $prime_run mpvpaper -v -p -o "$opt shuffle" '*' $1
+		# mpvpaper -f -p -o "$opt shuffle" '*' $1
+		# cp $1 $HOME/.last_wallplayer_playlist.m3u
+		echo $query > $HOME/.last_wallplayer_playlist.m3u
+	fi
+fi

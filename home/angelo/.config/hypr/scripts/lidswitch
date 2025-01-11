@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# LockCommand = hyprlock &disown
+# LockCommand = loginctl lock-session
+LockCommand = `dm-tool lock`
+MPV_SOCKET_PATH=/tmp/mpv-socket
+
+on_close() {
+  echo 'set pause yes' | socat - $MPV_SOCKET_PATH &&
+  pkill -TSTP mpvpaper
+	pkill -TSTP waybar
+	timeout 5s bash -c 'until hyprctl dispatch dpms off eDP-1; do sleep 0.2; done'
+	# timeout 5s bash -c 'until hyprctl keyword monitor "eDP-1,disable"; do sleep 0.2; done'
+}
+
+on_open() {
+	# timeout 5s bash -c 'until hyprctl keyword monitor "eDP-1,prefered,0x0,1"; do sleep 0.2; done'
+	timeout 5s bash -c 'until hyprctl dispatch dpms on; do sleep 0.2; done'
+  # $LockCommand # hypridle is handling screen lock
+  # waybar &disown # only if screen is disabled
+	pkill -CONT waybar
+  pkill -CONT mpvpaper &&
+  echo 'set pause no' | socat - $MPV_SOCKET_PATH
+}
+
+# Executar conforme necessário
+if [[ "$1" == "--close" ]]; then
+	on_close
+elif [[ "$1" == "--open" ]]; then
+	on_open
+else
+	read DPMS DISABLED < <(hyprctl monitors | awk '/Monitor eDP-1/,/availableModes:/ {if ($1 == "dpmsStatus:") dpms=$2; if ($1 == "disabled:") disabled=$2} END {print dpms, disabled}')
+	if [[ $DISABLED == false && $DPMS == 1 ]]; then
+		# echo "Monitor eDP-1 ligado"
+		on_close
+	else
+		# echo "Monitor eDP-1 desligado"
+		on_open
+	fi
+	exit 0
+fi
+

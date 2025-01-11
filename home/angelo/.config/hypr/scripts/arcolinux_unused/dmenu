@@ -1,0 +1,2 @@
+#!/bin/bash
+exec `dmenu-wl_path | dmenu-wl -h '42' -fn '21' -nb '#0f1419' -nf '#bfbdb6'`

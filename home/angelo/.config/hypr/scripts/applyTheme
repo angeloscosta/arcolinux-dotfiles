@@ -1,0 +1,3 @@
+#!/bin/bash 
+
+wallpaper = $(sed -n 1p $HOME/.config/hypr/theme.conf)

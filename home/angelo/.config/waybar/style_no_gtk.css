@@ -1,0 +1,202 @@
+@import "../colors.css";
+
+* {
+	font-family: Iosevka Extended, "JetBrainsMono", "Noto Sans", "Roboto Condensed", sans-serif;
+}
+
+window.eDP-1 * {
+	font-size: 23px;
+}
+
+window.HDMI-1 * {
+	font-size: 23px;
+}
+
+
+window#waybar {
+	background-color: transparent;
+	transition-property: background-color;
+	transition-duration: .5s;
+}
+
+window#waybar.hidden {
+	opacity: 0.0;
+}
+
+#submap,
+#backlight,
+#battery,
+#clock,
+#cpu,
+#disk,
+#memory,
+#mpd,
+#mpris,
+#tray,
+#pulseaudio,
+#pulseaudio.bluetooth,
+#pulseaudio-slider,
+#network,
+#image,
+#custom-nmapplet,
+#custom-cputemp,
+#custom-uptime,
+#custom-menu,
+#custom-power,
+#custom-weather,
+#custom-updater,
+#custom-keybindings,
+#custom-cycle_wall,
+#custom-vpn_check,
+#custom-media,
+#custom-temperature_cpu,
+#custom-temperature_gpu,
+#workspaces,
+#taskbar,
+#custom-espaco,
+tooltip,
+tooltip label {
+	margin: 10px 5px 0px 5px;
+	padding: 0px 0px;
+	color: @_foreground;
+	background-color: alpha(@_background, 0.6);
+}
+
+#workspaces button {
+	padding: 0px 5px;
+	min-width: 30px;
+	color: @_foreground;
+}
+
+#submap,
+#pulseaudio.muted,
+#battery.critical:not(.charging),
+#network.disconnected,
+#network.disabled,
+#taskbar button {
+	background: alpha(@_background, 0.6);
+	color: @_accent;
+}
+
+#workspaces button.active {
+	color: @_accent;
+}
+
+/* furthest left */
+#image {
+	margin: 10px 5px 0px 10px;
+	padding: 0px 10px;
+}
+
+#workspaces button {
+	margin: 0px 0px 0px 0px;
+}
+
+
+#submap:hover,
+#backlight:hover,
+#battery:hover,
+#clock:hover,
+#cpu:hover,
+#disk:hover,
+#memory:hover,
+#mpd:hover,
+#mpris:hover,
+#tray:hover,
+#pulseaudio:hover,
+#pulseaudio.bluetooth:hover,
+#pulseaudio-slider:hover,
+#network:hover,
+#image-menu:hover,
+#image:hover,
+#custom-nmapplet:hover,
+#custom-cputemp:hover,
+#custom-uptime:hover,
+#custom-menu:hover,
+#custom-power:hover,
+#custom-weather:hover,
+#custom-updater:hover,
+#custom-keybindings:hover,
+#custom-cycle_wall:hover,
+#custom-vpn_check:hover,
+#custom-media:hover,
+#custom-temperature_cpu:hover,
+#custom-temperature_gpu:hover {
+	border: 1px solid @_accent;
+}
+
+
+button:hover {
+	border-color: @_accent;
+}
+
+/* furthest right*/
+#clock,
+tooltip label {
+	margin: 10px 10px 0px 5px;
+}
+
+
+#tray {
+	margin: 10px 5px 0px 5px;
+	padding: 0px 10px;
+}
+
+#battery.critical:not(.charging) {
+	animation-name: blink;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes blink {
+	to {
+		color: @_foreground;
+	}
+}
+
+#tray>.needs-attention {
+	-gtk-icon-effect: highlight;
+}
+
+
+tooltip {
+	background: alpha(@_background, 0.6);
+}
+
+tooltip label {
+	background: transparent;
+	color: @_foreground;
+	padding: 0px 0px;
+}
+
+#pulseaudio-slider {
+	padding: 0px 10px;
+}
+
+#pulseaudio-slider slider {
+	min-height: 10px;
+	min-width: 0px;
+	opacity: 0;
+	background-image: none;
+	border: none;
+	box-shadow: none;
+	border-radius: 0px;
+	padding: 4px 2px;
+	background-color: @_foreground;
+}
+
+#pulseaudio-slider trough {
+	min-height: 9px;
+	min-width: 90px;
+	border-radius: 0px;
+	/* background-color: @_background; */
+	background: alpha(@_background, 0.2);
+}
+
+#pulseaudio-slider highlight {
+	min-height: 10px;
+	border-radius: 0px;
+	background-color: @_foreground;
+}

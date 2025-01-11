@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function help_message() {
+  echo "Uso: $(basename "$0") [-u] [-i] [-t] [-h]"
+  echo "   -tv \t --toggle-video: play/pause video"
+  echo "   -tl \t --toggle-loop: play/pause playlist"
+  echo "   -i \t --info : Get playlists <info> .info.json files"
+  echo "   -s \t --seek +/- <time>: Get playlists <track> .json files"
+  echo "   -h \t --help : Print this help message"
+}
+
+# Use getopts para processar as opções
+while getopts ":uith" opt; do
+  case ${opt} in
+    u)
+      echo "caso 1"
+      ;;
+    i)
+      echo "caso 2"
+      ;;
+    t)
+      echo "caso 3"
+      ;;
+    h)
+      help_message
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG. Use -h for help."
+      help_message
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument. Use -h for help."
+      help_message
+      ;;
+    *)
+      echo "No parameters"
+      ;;
+  esac
+done

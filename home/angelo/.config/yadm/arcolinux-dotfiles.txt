@@ -1,0 +1,43 @@
+
+# Directórios @ ~
+
+# Arquivos @ ~
+~/.zshrc
+~/.zshrc-personal
+~/.bashrc
+~/.zshrc
+~/.xinitrc
+~/.xsession
+~/.Xauthority
+~/.Xresources
+~/.gtkrc-2.0
+~/.gitconfig
+
+# @ ~/.local
+~/.local/bin
+
+# WMs @ ~/.config
+~/.config/hypr
+~/.config/sway
+~/.config/cosmic
+~/.config/xfce4
+
+# Pkgs @ ~/.config
+~/.config/conky
+~/.config/waybar
+~/.config/wofi
+~/.config/gammastep
+~/.config/mpv
+~/.config/MangoHud
+~/.config/glimpse
+~/.config/yay
+~/.config/yadm
+~/.config/helix/config.toml
+~/.config/helix/languages.toml
+~/.config/felix
+~/.config/Thunar
+~/.config/nautilus
+~/.config/wireplumber
+
+# Costumização
+~/.config/themes

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+CONFIG_DIR="$HOME/.config/yadm"
+GITHUB_USER="angeloscosta"
+BACKUP_DIR="$HOME/yadm_backups"
+REPOS_BASE_DIR="$HOME/Downloads/GitHub"
+
+mkdir -p "$BACKUP_DIR" "$REPOS_BASE_DIR"
+
+for file in "$CONFIG_DIR"/*.txt; do
+    [ -e "$file" ] || continue
+
+    repo_name=$(basename "$file" .txt)
+    repo_url="git@github.com:$GITHUB_USER/$repo_name.git"
+    repo_path="$REPOS_BASE_DIR/$repo_name"
+
+    # Verifica se o repositório já existe
+    if [ ! -d "$repo_path/.git" ]; then
+        if [ -d "$repo_path" ]; then
+            echo "Erro: O diretório '$repo_path' já existe e não é um repositório Git."
+            continue
+        fi
+        
+        # Cria o repositório no GitHub e clona
+        curl -u "$GITHUB_USER" https://api.github.com/user/repos -d "{\"name\":\"$repo_name\"}"
+        git clone "$repo_url" "$repo_path" || continue
+    fi
+
+    # echo "$repo_path"
+    # rm -rf "$repo_path"/*
+    # exit
+    # thunar "$repo_path"
+
+    cd "$repo_path" || continue
+    git pull
+
+    # Copia os arquivos listados no .txt para o repositório
+    while IFS= read -r path; do
+        path=$(echo "$path" | xargs)  # Remove espaços extras
+        [ -z "$path" ] && continue   # Ignora linhas vazias
+        [ "${path:0:1}" == "#" ] && continue  # Ignora comentários
+
+        # Expande '~' para $HOME
+        if [[ "$path" == "~/"* ]]; then
+            path="$HOME/${path:2}"
+        fi
+
+        if [ -e "$path" ]; then
+            cp -r --parents "$path" ./
+            echo "Adicionado: $path"
+        else
+            echo "Aviso: O caminho '$path' não existe e foi ignorado."
+        fi
+    done < "$file"
+
+    # Cria o backup em .zip
+    zip -r "$BACKUP_DIR/$repo_name.zip" ./*
+
+    # Faz commit e push
+    git add .
+    if git diff-index --quiet HEAD; then
+        echo "Nenhuma alteração detectada em $repo_name. Pulando commit."
+    else
+        git commit -m "Backup atualizado em $(date)"
+        git push
+    fi
+    cd ..
+done

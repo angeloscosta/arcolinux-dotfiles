@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+file=$HOME/Imagens/Wallpaper/Night.m3u
+# file=$1
+touch $file
+rm $file
+
+cd ..
+for f in $@; do
+  # if [ $f == $1 ]; then
+  #   continue
+  # fi
+  find $f -type f >> $file
+done
+cd ~
+
+readarray -t pics < <(cat $file | shuf)
+rm $file
+
+for p in ${pics[@]}; do
+  echo $p >> $file
+done

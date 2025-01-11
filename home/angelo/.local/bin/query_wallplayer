@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Verifica se o usuário forneceu um título
+if [ -z "$1" ]; then
+  echo "Uso: $0 <título>"
+  exit 1
+fi
+
+# Título fornecido pelo usuário
+# titulo="$1"
+id="$1"
+
+# Arquivo JSON
+arquivo_json="Videos/Wallpaper/YouTube/Space Rock.json"
+
+# Busca e retorna a URL correspondente ao título fornecido
+# url=$(jq -r --arg titulo "$titulo" '.[] | select(.title == $titulo) | .url' "$arquivo_json")
+# url=$(jq -r --arg id "$id")
+url=$(grep "$id" "$arquivo_json" | jq -r .url)
+
+# Verifica se a URL foi encontrada
+if [ -n "$url" ]; then
+  echo "URL encontrada: $url"
+  echo "Tamanho: ${#url}"
+else
+  echo "Título não encontrado."
+fi
+

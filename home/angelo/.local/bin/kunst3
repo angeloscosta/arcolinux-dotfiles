@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+get_player_status=$(playerctl metadata --format "{{ artist }} - {{ title }}")
+#notify-send.sh -c "info" --replace-file=/tmp/playerstatusnotification -i "$COVER" "$(mpc current)"
+notify-send.sh -c "info" --replace-file=/tmp/playerstatusnotification "$get_player_status"
+
+
+for sec in `seq 5 -1 1`; do
+  get_player_metadata=$(playerctl metadata --format "{{lc(status)}}\ {{ duration(position)}}/{{duration(mpris:length) }}")
+  porcent=$(playerctl metadata --format "{{ (position * 100 / mpris:length) }}" | awk -F '.' '{print $1}')
+  notify-send.sh -c "info" -t 1070 --replace-file=/tmp/playermetadatanotification "$get_player_metadata $porcent%"
+  sleep 0.93
+done && exit

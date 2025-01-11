@@ -1,0 +1,65 @@
+# Mod keys
+set $mod Mod4
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+# System
+# set $systemctl_env systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+# set $dbus_env dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+set $polkit /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# set $polkit /usr/lib/polkit-kde-authentication-agent-1
+
+# Directories
+set $localBin $HOME/.local/bin
+set $swayDir $HOME/.config/sway
+set $swayScriptsDir $swayDir/scripts
+set $wofiScriptsDir $HOME/.config/wofi/scripts
+set $conkyDir $HOME/.config/conky
+
+# Local bin
+set $notifications $localBin/notifications
+set $media_control $localBin/media_control
+set $mpc_control $localBin/mpc_control
+set $backlight $localBin/brightness
+set $wallpaper $localBin/wallpaper
+
+# Sway scripts
+set $startup $swayScriptsDir/startup
+set $xauthority $swayScriptsDir/xauthority
+set $portal $swayScriptsDir/portal
+set $lid $swayScriptsDir/lidswitch
+
+# Sway scripts (arcolinux)
+set $screenshot $swayScriptsDir/screenshot
+set $lock $swayScriptsDir/lockscreen
+set $colorpicker $swayScriptsDir/colorpicker
+
+# Wofi scripts
+set $windowmenu $wofiScriptsDir/sway-window.sh
+set $powermenu $wofiScriptsDir/powermenu.sh
+set $mpdmenu $wofiScriptsDir/mpd.sh
+set $networkmenu $wofiScriptsDir/network.sh
+set $screenshotmenu $wofiScriptsDir/screenshot.sh
+set $capturemenu $wofiScriptsDir/capture.sh
+set $usermenu $wofiScriptsDir/asuser.sh
+
+# Default Applications
+set $term foot
+# set $bar GTK_THEME Ayu-Dark-Glass waybar -b main-bar -l error
+# set $files GTK_THEME Ayu-Dark-Glass thunar
+set $bar waybar -b main-bar -l error -c ~/.config/sway/waybar/config
+set $files thunar
+set $files_term $term -e felix
+# set $menu bemenu-run -b -i -p '' --fn 'Fira mono 20'
+# set $menu dmenu_path | wmenu | xargs swaymsg exec --
+# set $menu glimpse
+set $menu pkill wofi || wofi -S drun -b -W 35% -H 35%
+set $editor $term -e helix
+set $browser mercury-browser
+set $browser_study mercury-browser -P unifesp
+
+

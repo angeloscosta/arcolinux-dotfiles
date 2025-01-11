@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Captura os valores de dpmsStatus e disabled
+# read dpms disabled < <(hyprctl monitors | awk '/Monitor eDP-1/,/availableModes:/ {if ($1 == "dpmsStatus:") dpms=$2; if ($1 == "disabled:") disabled=$2} END {print dpms; print disabled}')
+read dpms disabled < <(hyprctl monitors | awk '/Monitor eDP-1/,/availableModes:/ {if ($1 == "dpmsStatus:") dpms=$2; if ($1 == "disabled:") disabled=$2} END {print dpms, disabled}')
+
+# Exibe os valores capturados
+echo "dpmsStatus: $dpms"
+echo "disabled: $disabled"

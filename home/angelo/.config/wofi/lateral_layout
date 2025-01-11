@@ -1,0 +1,1 @@
+-k /dev/null -d -b --define halign=center --define hide_search=true

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Notify
+notify_user() {
+	notify-send -h string:x-canonical-private-synchronous:sys-notify "$1"
+}
+
+get_info() {
+	info=$(hyprctl activewindow)
+	add=$(echo $info | sed -n 1p | awk -F ' ' '{print $2}')
+	# at=$(echo $info | sed -n 4p | awk -F ' ' '{print $2}')
+	# size=$(echo $info | sed -n 5p | awk -F ' ' '{print $2}')
+	notify-send "address: $add"
+	# notify-send "at: $at"
+	# notify-send "size: $size"
+}
+
+activate() {
+	get_info
+	# hyprctl setprop address:0x$add nofocus 1
+	# hyprctl setprop address:0x$add float 1
+	# hyprctl setprop address:0x$add pin 1
+	hyprctl dispatch setfloating address:0x$add 1
+	hyprctl dispatch resizewindow address:0x$add 100% 100%
+	hyprctl dispatch movewindowpixel address:0x$add 0 0
+	sleep 5
+	deactivate
+}
+
+deactivate() {
+	# hyprctl setprop address:0x$add nofocus 0
+	# hyprctl setprop address:0x$add float 0
+	# hyprctl setprop address:0x$add pin 0
+	hyprctl dispatch setfloating address:0x$add 0
+	echo 0
+}
+
+# Execute accordingly
+if [[ "$1" == "--wall" ]]; then
+	activate
+elif [[ "$1" == "--notwall" ]]; then
+	deactivate
+else
+	notify_user "No command. Exiting."
+	exit 0
+fi

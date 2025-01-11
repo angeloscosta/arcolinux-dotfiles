@@ -1,0 +1,63 @@
+max_results = 20
+
+# Directory to search for files from
+search_paths = ["/home/angelo", "/run/media"]
+search_hidden_folders = false
+
+# Directories to ignore when indexing and searching files.
+ignore_directories = ["node_modules", "zig-cache", "zig-out", "target", "_prefix32_wine", "texmf", "VirtualBox VMs", "x86_64-pc-linux-gnu-library", "x86_64-unknown-linux-gnu-library"]
+
+# Index and search files by keywords they contain. Works for pdf, docx,
+# txt and a few other plaintext filetypes. Will take considerably longer
+# to index. It is recommended that full reindexes are done infrequently
+# with this option.
+search_file_contents = false
+
+[indexing]
+
+# Where to store the file database.
+location = "/home/angelo/.cache/glimpse"
+
+# The maximum size of the file index database in GiB. If this is exceeded,
+# new data will not be added until there has been a full reindex.
+size_upper_bound_GiB = 5.0
+
+# Recrawl and reindex the file system after this many days
+full_reindex_after_days = 0.6000000238418579
+
+[modules]
+commands = true
+files = false
+steam_games = true
+web_bookmarks = true
+calculator = true
+dictionary = true
+
+[visual]
+show_icons = true
+icon_size = 32
+result_borders = false
+dark_result_borders = false
+
+[window]
+# width = 540
+# height = 410
+width = 672
+height = 378
+
+[preview_window]
+enabled = true
+# enabled = false
+# width = 420
+width = 672
+# image_size = 350
+image_size = 672
+
+[misc]
+display_command_paths = false
+display_file_and_directory_paths = true
+# preferred_terminal = "xterm"
+preferred_terminal = "foot"
+
+# Open files with a .exe extension with wine.
+run_exes_with_wine = true

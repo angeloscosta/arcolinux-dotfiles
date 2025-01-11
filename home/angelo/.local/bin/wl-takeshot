@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+## Copyright (C) 2020-2022 Aditya Shakya <adi1090x@gmail.com>
+## Everyone is permitted to copy and distribute copies of this file under GNU-GPL3
+
+## Script to take screenshots with maim
+
+time=`date +%Y-%m-%d-%H-%M-%S`
+#geometry=`xrandr | grep 'current' | head -n1 | cut -d',' -f2 | tr -d '[:blank:],current'`
+dir="`xdg-user-dir PICTURES`/Screenshots"
+file="Screenshot_${time}.png"
+
+# Commands
+notify_cmd_shot="notify-send.sh -c screenshot --replace-file=/tmp/screenshotnotification"
+
+# notify and view screenshot
+notify_view () {
+	#${notify_cmd_shot} "Copied to clipboard."
+	if [[ -e "$dir/$file" ]]; then
+    $notify_cmd_shot "Screenshot Saved"
+	else
+		$notify_cmd_shot "Screenshot Deleted."
+	fi
+}
+
+# Copy screenshot to clipboard
+copy_shot () {
+	tee "$file" | xclip -selection clipboard -t image/png
+  #grim $file
+}
+
+# countdown
+countdown () {
+	for sec in `seq $1 -1 1`; do
+		notify-send.sh -t 1070 --replace-file=/tmp/screenshotnotification "Taking shot in : $sec"
+		sleep 0.93
+	done
+}
+
+# take shots
+shotnow () {
+	#cd ${dir} && maim -u -f png | copy_shot
+  cd ${dir} && sleep 0.1 && grim $file
+  notify_view
+}
+
+shot_in () {
+
+  if [[ $1 == "" ]]; then
+    notify-send.sh "Time not specified"
+    exit
+  elif [[ ! "$1" =~ ^[0-9]+$ ]]; then
+    notify-send.sh "Not an integer"
+    exit
+  else  
+    #notify-send.sh "Is an integer"
+    countdown $1 && sleep 0.2
+  fi
+
+	cd ${dir} && sleep 0.1 && grim $file
+  notify_view
+}
+
+shotwin () {
+  if [[ "$XDG_CURRENT_DESKTOP" == "Hyprland" ]]; then
+    #location=$(hyprctl -j activewindow | jq -r '. | "\(.at)"' | tr -d '[]')
+    #size=$(hyprctl -j activewindow | jq -r '. | "\(.size)"' | tr -d '[]' | tr , x)
+    coordinates=$(hyprctl -j activewindow | jq -r '. | "\(.at) \(.size)"' | tr -d '[]' | sed 's/\(.*\),/\1x/')
+  elif [[ "$XDG_CURRENT_DESKTOP" == "Sway" ]]; then
+    #location=$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y)"')
+    #size=$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.width)x\(.height)"')
+    coordinates=$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')
+  fi
+  
+  cd ${dir} && sleep 0.1 && grim -g "$coordinates" $file
+	notify_view
+}
+
+shotarea () {
+  cd ${dir} && sleep 0.1 && grim -g "$(slurp)" $file	
+  notify_view
+}
+
+if [[ ! -d "$dir" ]]; then
+	mkdir -p "$dir"
+fi
+
+if [[ "$1" == "--now" ]]; then
+	shotnow
+elif [[ "$1" == "--in" ]]; then
+  shot_in $2
+elif [[ "$1" == "--win" ]]; then
+	shotwin
+elif [[ "$1" == "--area" ]]; then
+	shotarea
+else
+	echo -e "Available Options : --now --in <time> --win --area"
+fi
+
+exit 0

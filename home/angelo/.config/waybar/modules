@@ -1,0 +1,356 @@
+{
+  "icon-size": 26,
+    
+  "backlight": {
+    "interval": 2,
+    "align": 0,
+    "rotate": 0,
+      "format": " {icon} {percent}% ",
+      "format-icons": ["󰃞"],
+      "on-click": "",
+      "on-click-middle": "",
+      "on-click-right": "",
+      "on-update": "",
+      "on-scroll-up": "light -A 1",
+      "on-scroll-down": "light -U 1",
+      "smooth-scrolling-threshold": 1,
+      "tooltip": true,
+      "tooltip-format": "Backlight {percent}%",
+    },
+
+	"wlr/workspaces-cn": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "all-outputs": true,
+    "sort-by-number": true,
+    "format-icons": {
+      "1": "一",
+      "2": "二",
+      "3": "三",
+      "4": "四",
+      "5": "五",
+      "6": "六",
+      "7": "七",
+      "8": "八",
+      "9": "九",
+      "10": "十",
+      "focused": "",
+      "default": ""
+    },
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+  },
+
+  "wlr/workspaces": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "all-outputs": false,
+    "sort-by-number": true,
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "10": "10",
+      "focused": "",
+      "default": ""
+    },
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+  },
+
+"sway/workspaces": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "all-outputs": false,
+    "sort-by-number": true,
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "10": "10",
+      "default": ""
+    },
+    /*
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+    */
+  },
+
+  "wlr/taskbar": {
+      "format": "{icon}",
+      "icon-size": 26,
+      "icon-theme": "Star",
+      "tooltip": false,
+      "tooltip-format": "{title}",
+      "on-click": "activate",
+      "on-click-middle": "close",
+      "on-click-right": "minimize"
+  },	
+
+  "battery": {
+		"interval": 60,
+		"align": 0,
+		"rotate": 0,
+		//"bat": "BAT1",
+		//"adapter": "ACAD",
+		"full-at": 100,
+		"design-capacity": false,
+    "states": {
+      "good": 95,
+      "warning": 30,
+      "critical": 15
+    },
+    "format": " {icon} {capacity}% ",
+    "format-charging": "  {capacity}% ",
+    "format-plugged": "  {capacity}% ",
+    "format-full": " {icon} Full ",
+    // "format-good": "What is good?",
+    "format-alt": " {icon} {time} ",
+    "format-icons": ["", "", "", "", ""],
+    "format-time": " {H}h {M}min ",
+    "tooltip": true,
+    // "on-click-right": "~/.config/hypr/scripts/glassmorphismToggle"
+  },
+
+  "clock": {
+    "interval": 60,
+    "align": 0,
+    "rotate": 0,
+    "tooltip-format": "{calendar}",
+    "format": " {:%H:%M} ",
+    "format-alt": "  {:%a %b %d, %G} ",
+    // "format": " {:%H:%M (%Z)} ",
+    // "tooltip-format": "{tz_list}",
+    "timezones": [
+      "America/Sao_Paulo",
+      "Australia/Melbourne",
+      "Europe/Moscow"
+    ],
+    
+    "calendar": {
+      "format": {
+        "today": "<span color='#ff6f6b'><b><u>{}</u></b></span>"
+      },
+      "on-scroll": 1,
+    },
+    "actions":  {
+      "on-click-left": "mode",
+      "on-click-right": "shift_down",
+      "on-click-middle": "shift_up",
+      /* "on-scroll-up": "tz_up",
+      "on-scroll-down": "tz_down" */
+    }
+  },
+
+  "cpu": {
+    "interval": 5,
+    // "format": " {usage}% {temperature}C",
+    // "format": "  {icon0}{icon1}{icon2}{icon3}{usage:>1}% ",
+      "format": "  {load} {icon0}{icon1}{icon2}{icon3}{icon4}{icon5}{icon6}{icon7}",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "tooltip": true,
+  },
+           
+  "custom/menu": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "$HOME/.config/hypr/scripts/menu",
+  },
+
+  "custom/nmapplet": {
+    "exec": "nm-applet",
+  },
+
+  "image#menu" : {
+    "path": "/usr/share/icons/al-beautyline/apps/scalable/start-here-arcolinux.svg",
+    /* "on-click": "pkill wofi || wofi -S drun -b -W 35% -H 35% -l top-left -x 5 -y 5" */
+    "on-click": "echo 'playlist-next' | socat - /tmp/mpv-socket && notify-send 'Next track' & sleep 1 && echo 'set pause no' | socat - /tmp/mpv-socket",
+    "on-click-right": "echo 'playlist-prev' | socat - /tmp/mpv-socket && notify-send 'Previous track' & sleep 1 && echo 'set pause no' | socat - /tmp/mpv-socket",
+    /* "on-click-middle": "echo 'cycle pause' | socat - /tmp/mpv-socket && notify-send 'Toggled pause'",
+    /* "on-click-middle": "if [[ `pidof mpvpaper` ]]; then pkill mpvpaper; else mpvpaper -f -n 360 -p -o 'input-ipc-server=/tmp/mpv-socket no-audio loop shuffle panscan=1 profile=sw-fast' '*' Videos/Wallpaper/Soviet; fi", */
+    "on-click-middle": "pkill -TSTP mpvpaper || pkill -CONT mpvpaper",
+  },
+
+  "custom/power": {
+    "format": "  ",
+    "tooltip": false,
+    "on-click": "archlinux-logout",
+  },
+
+  "custom/temperature_cpu": {
+    "format": " {} ",
+    "exec": "~/.config/waybar/scripts/tempcpu.sh",
+    "interval": 10,
+    "tooltip": true,
+    "tooltip-format": "CPU temperature",
+  },
+
+  "custom/temperature_gpu": {
+    "format": " {} ",
+    "exec": "~/.config/waybar/scripts/tempgpu.sh",
+    "interval": 10,
+    "tooltip": true,
+    "tooltip-format": "GPU temperature",
+  },
+
+  "disk": {
+    "interval": 30,
+    "format": "   {free} ",
+    "tooltip": true,
+    "tooltip-format": "Disk {percentage_free}%",
+  },
+
+  "memory": {
+    "interval": 10,
+    "format": "  {used:0.1f}GiB",
+    "tooltip": true,
+    "tooltip-format": "RAM {percentage}%",
+  },
+
+  "network": {
+    "interval": 5,
+    "format-wifi": "  {signalStrength}% ",
+    "format-ethernet": "   ",
+    "format-linked": "  {ifname} (No IP) ",
+    "format-disconnected": " 睊 Disconnected ",
+    "format-disabled": " 睊 Disabled ",
+    /* "format-alt": "  {bandwidthUpBits} |  {bandwidthDownBits} ", */
+    "tooltip-format": "   {essid} \n  {ifname} via {gwaddr} \n  {bandwidthUpBits} |  {bandwidthDownBits} ",
+    "on-click": "nm-connection-editor"  // Ou "nmtui" se preferir
+  },
+
+  "custom/weather": {
+    "format": " {} ",
+    "format-alt": " {alt}: {} ",
+    "format-alt-click": "click-right",
+    "interval": 1800,
+    "return-type": "json",
+    "exec": "~/.config/hypr/scripts/weather.sh Santos",
+    "exec-if": "ping wttr.in -c1"
+  },
+
+  "custom/updater": {
+    "format": "  {} ",
+    "exec": "checkupdates | wc -l",
+    "exec-if": "[[ $(checkupdates | wc -l) ]]",
+    "interval": 1800,
+    "on-click": "alacritty -T update -e sudo pacman -Syyu && notify-send 'The system has been updated'"
+  },
+
+  "custom/cycle_wall": {
+    "format":"  ",
+    "on-click": "echo 'playlist-next' | socat - /tmp/mpv-socket && notify-send 'Next track' & sleep 1 && echo 'set pause no' | socat - /tmp/mpv-socket",
+    "on-click-right": "echo 'playlist-prev' | socat - /tmp/mpv-socket && notify-send 'Previous track' & sleep 1 && echo 'set pause no' | socat - /tmp/mpv-socket",
+    /* "on-click-middle": "echo 'cycle pause' | socat - /tmp/mpv-socket && notify-send 'Toggled pause'",
+    /* "on-click-middle": "if [[ `pidof mpvpaper` ]]; then pkill mpvpaper; else mpvpaper -f -n 360 -p -o 'input-ipc-server=/tmp/mpv-socket no-audio loop shuffle panscan=1 profile=sw-fast' '*' Videos/Wallpaper/Soviet; fi", */
+    "on-click-middle": "pkill -TSTP mpvpaper || pkill -CONT mpvpaper",
+  },
+
+  "pulseaudio": {
+    /* "format": "{icon} {volume}% {format_source}", */
+    "format": " {icon} {volume}% ",
+    "format-muted": " {icon} Mute ",
+    "format-bluetooth": "  {volume}% {format_source} ",
+    "format-bluetooth-muted": "  Mute ",
+    "format-source": "  {volume} ",
+    "format-source-muted": "  ",
+    "format-icons": {
+      "headphone": "󰋋",
+      "hands-free": "󰥰",
+      "headset": "󰋎",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": "󰕾",
+    },
+    "scroll-step": 5.0,
+    /* "on-click": "pamixer -t", */
+    /* "on-click": "pactl set-sink-mute @DEFAULT-SINK toggle", */
+    "on-click": "pavucontrol",
+    "on-click-right": "blueman-manager",
+    "on-click-middle": "~/.config/hypr/scripts/media_control --cycle-sink",
+    "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +1%",
+    "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -1%",
+    "smooth-scrolling-threshold": 1,
+  },
+
+  "pulseaudio/slider": {
+    "min": 0,
+    "max": 150,
+    "orientation": "horizontal"
+  },
+
+  "custom/keybindings": {
+  "format":"爵",
+  "tooltip": false,
+  "on-click": "~/.config/hypr/scripts/keyhint",
+  },
+  
+  "mpris": {
+    "max-length": 100,
+    "title-len": 66,
+	"format": " <span color=\"#ff6f6b\">{status_icon}</span> {player} ",
+	"format-paused": " <span color=\"#ff6f6b\">{status_icon}</span> {player} ",
+	"player-icons": {
+      "mpd": "🎵",
+      "firefox": "爵"
+	},
+	"status-icons": {
+	  "paused": "▶",
+	  "playing": "⏸"
+	},
+	// "ignored-players": ["firefox"],
+    "on-click-middle": "mpc stop",
+    "on-click-right": "playerctl -a metadata --format '{{artist}} - {{markup_escape(title)}}' | head -n 1 | wl-copy",
+    "interval": 5,
+    "dynamic-order": ["position", "length", "title", "artist", "album"],
+    "dynamic-importance-order": ["position", "length", "title", "artist", "album"],
+    "tooltip-format": "{dynamic}",
+  },
+
+  "tray": {
+    "icon-size": 26,
+    "spacing": 10 
+  },
+
+  "sway/submap": {
+    "format": "{}",
+    "max-length": 30,
+    "tooltip": false,
+    /* "on-click": "hyprctl dispatch submap reset"*/
+  },
+  "hyprland/submap": {
+    "format": "{}",
+    "max-length": 30,
+    "tooltip": false,
+    "on-click": "hyprctl dispatch submap reset"
+  },
+  "group/hardware": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "hardware",
+      "transition-left-to-right": true,
+    },
+	"modules": [
+      "cpu",
+      "custom/temperature_cpu",
+      "custom/temperature_gpu",
+	  "memory",
+	  "disk",
+	]
+  },
+}
+

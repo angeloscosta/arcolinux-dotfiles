@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Caminho para o arquivo com os diretórios e arquivos
+# BACKUP_LIST="$HOME/Documentos/backup_list.txt"
+BACKUP_LIST="$HOME/.config/yadm/backup_list.txt"
+
+# Verifica se o arquivo existe
+if [[ ! -f "$BACKUP_LIST" ]]; then
+    echo "Erro: Arquivo $BACKUP_LIST não encontrado."
+    exit 1
+fi
+
+# Adiciona cada item listado ao Yadm
+while IFS= read -r line; do
+    # Ignora linhas vazias ou comentários (#)
+    [[ -z "$line" || "$line" =~ ^# ]] && continue
+
+    # Expande variáveis como ~ para o caminho absoluto
+    item=$(eval echo "$line")
+
+    # Verifica se o arquivo ou diretório existe
+    if [[ -e "$item" ]]; then
+        yadm add "$item"
+        echo "Adicionado: $item"
+    else
+        echo "Aviso: $item não encontrado, ignorando..."
+    fi
+done < "$BACKUP_LIST"
+
+# Faz o commit
+yadm commit -m "Backup automático de dotfiles"
